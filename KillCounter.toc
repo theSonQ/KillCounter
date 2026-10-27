@@ -1,0 +1,6 @@
+## Title: Licznik zabic
+## Version: 1.13
+## Notes: Liczy zabite potwory - okienko z resetem | /lz
+## Author: theSonQ
+KillCounter.lua
+KillCounter.xml

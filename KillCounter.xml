@@ -1,0 +1,225 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ UI.xsd">
+	<!-- Separate, short text fields. No concatenated multi-mob FontString. -->
+	<Frame name="KillCounterRowTemplate" virtual="true">
+		<Size><AbsDimension x="314" y="20"/></Size>
+		<Layers><Layer level="ARTWORK">
+			<FontString name="$parent_Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP">
+				<Size><AbsDimension x="282" y="18"/></Size>
+				<Anchors><Anchor point="TOPLEFT"/></Anchors>
+				<FontHeight><AbsValue val="12"/></FontHeight>
+			</FontString>
+			<FontString name="$parent_Count" inherits="GameFontHighlight" justifyH="RIGHT" justifyV="TOP">
+				<Size><AbsDimension x="64" y="18"/></Size>
+				<Anchors><Anchor point="TOPRIGHT"/></Anchors>
+				<FontHeight><AbsValue val="12"/></FontHeight>
+			</FontString>
+		</Layer></Layers>
+	</Frame>
+	<!-- Always shown, non-interactive driver: updates even with the UI hidden. -->
+	<Frame name="KillCounterDriver" parent="UIParent" hidden="false" enableMouse="false">
+		<Size><AbsDimension x="1" y="1"/></Size>
+		<Anchors><Anchor point="TOPLEFT"/></Anchors>
+		<Scripts>
+			<OnLoad>KillCounter.OnLoad(this)</OnLoad>
+			<OnEvent>KillCounter.OnEvent(this, event)</OnEvent>
+			<OnUpdate>KillCounter.OnUpdate(elapsedTime)</OnUpdate>
+		</Scripts>
+	</Frame>
+	<Button name="KillCounterMinimapButton" parent="UIParent" enableMouse="true">
+		<Size><AbsDimension x="24" y="24"/></Size>
+		<Anchors><Anchor point="CENTER" relativeTo="MinimapViewFrame" relativePoint="CENTER"><Offset><RelDimension x="-80" y="20"/></Offset></Anchor></Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Tooltips\Tooltip-Background"/>
+			</Layer>
+		</Layers>
+		<NormalTexture file="Interface\Minimap\battlecoin"/>
+		<HighlightTexture file="Interface\Buttons\PanelSmallButtonHighlight" alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad>
+				this:RegisterForClicks("LeftButton", "RightButton")
+				this:RegisterForDrag("LeftButton")
+			</OnLoad>
+			<OnClick>KillCounter.MinimapClick(this, key)</OnClick>
+			<OnEnter>
+				GameTooltip:SetOwner(this, "ANCHOR_LEFT")
+				GameTooltip:SetText("Licznik zabic")
+				GameTooltip:AddLine("LPM: pokaz/ukryj okienko", 0.8, 0.8, 0.8)
+				GameTooltip:AddLine("PPM: reset sesji", 0.8, 0.8, 0.8)
+				GameTooltip:AddLine("Przeciagnij, aby przesunac ikone", 0.5, 0.5, 0.5)
+				GameTooltip:Show()
+			</OnEnter>
+			<OnLeave>GameTooltip:Hide()</OnLeave>
+			<OnDragStart>KillCounter.MinimapDragStart(this)</OnDragStart>
+			<OnDragStop>KillCounter.MinimapDragStop(this)</OnDragStop>
+		</Scripts>
+	</Button>
+	<Frame name="KillCounterFrame" parent="UIParent" hidden="true" enableMouse="true">
+		<Size><AbsDimension x="360" y="424"/></Size>
+		<Anchors><Anchor point="CENTER"/></Anchors>
+		<Backdrop bgFile="Interface\Tooltips\Tooltip-Background" edgeFile="Interface\Tooltips\Tooltip-border" tile="true">
+			<BackgroundInsets><AbsInset top="4" left="4" bottom="4" right="4"/></BackgroundInsets>
+			<EdgeSize><AbsValue val="16"/></EdgeSize>
+			<TileSize><AbsValue val="16"/></TileSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parent_Title" inherits="GameFontNormal" text="Licznik zabic">
+					<Anchors><Anchor point="TOP"><Offset><AbsDimension x="0" y="6"/></Offset></Anchor></Anchors>
+				</FontString>
+				<FontString name="$parent_Total" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size><AbsDimension x="338" y="18"/></Size>
+					<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="28"/></Offset></Anchor></Anchors>
+					<FontHeight><AbsValue val="12"/></FontHeight>
+				</FontString>
+				<FontString name="$parent_Stats" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size><AbsDimension x="338" y="18"/></Size>
+					<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="48"/></Offset></Anchor></Anchors>
+					<FontHeight><AbsValue val="11"/></FontHeight>
+				</FontString>
+				<FontString name="$parent_Session" inherits="GameFontNormal" justifyH="CENTER">
+					<Size><AbsDimension x="282" y="18"/></Size>
+					<Anchors><Anchor point="TOP"><Offset><AbsDimension x="0" y="72"/></Offset></Anchor></Anchors>
+					<FontHeight><AbsValue val="11"/></FontHeight>
+				</FontString>
+				<FontString name="$parent_Page" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size><AbsDimension x="338" y="18"/></Size>
+					<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="344"/></Offset></Anchor></Anchors>
+					<FontHeight><AbsValue val="11"/></FontHeight>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parent_Row1" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="98"/></Offset></Anchor></Anchors>
+			</Frame>
+			<Frame name="$parent_Row2" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row1" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row3" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row2" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row4" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row3" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row5" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row4" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row6" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row5" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row7" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row6" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row8" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row7" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row9" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row8" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row10" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row9" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row11" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row10" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="$parent_Row12" inherits="KillCounterRowTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_Row11" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Slider name="$parent_Scroll" inherits="UIPanelScrollBarTemplate" enableMouse="true">
+				<Size><AbsDimension x="12" y="202"/></Size>
+				<Anchors><Anchor point="TOPRIGHT"><Offset><AbsDimension x="-12" y="116"/></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnLoad>this:SetValueStepMode("INT"); this:SetMinMaxValues(0, 0)</OnLoad>
+					<OnValueChanged>
+						UIPanelScrollBar_OnValueChanged(this, arg1)
+						KillCounter.OnScrollChanged(this, arg1)
+					</OnValueChanged>
+					<OnMouseWheel>KillCounter.OnMouseWheel(delta)</OnMouseWheel>
+				</Scripts>
+			</Slider>
+			<Button name="$parent_Prev" inherits="UIPanelButtonTemplate" text="&lt;" hidden="true">
+				<Size><AbsDimension x="24" y="20"/></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="68"/></Offset></Anchor></Anchors>
+				<Scripts><OnClick>KillCounter.ChangeHistory(-1)</OnClick></Scripts>
+			</Button>
+			<Button name="$parent_Next" inherits="UIPanelButtonTemplate" text="&gt;" hidden="true">
+				<Size><AbsDimension x="24" y="20"/></Size>
+				<Anchors><Anchor point="TOPRIGHT"><Offset><AbsDimension x="-10" y="68"/></Offset></Anchor></Anchors>
+				<Scripts><OnClick>KillCounter.ChangeHistory(1)</OnClick></Scripts>
+			</Button>
+			<Button name="$parent_Close" inherits="UIPanelCloseButtonTemplate">
+				<Size><AbsDimension x="20" y="20"/></Size>
+				<Anchors><Anchor point="TOPRIGHT"><Offset><AbsDimension x="-4" y="4"/></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>this:GetParent():Hide()</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_HistoryBtn" inherits="UIPanelButtonTemplate" text="Archiwum">
+				<Size><AbsDimension x="104" y="24"/></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="366"/></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>KillCounter.ToggleHistory()</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(this, "ANCHOR_TOP")
+						GameTooltip:SetText("Archiwum poprzednich sesji")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parent_TimerBtn" inherits="UIPanelButtonTemplate" text="Start">
+				<Size><AbsDimension x="94" y="24"/></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="120" y="366"/></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>KillCounter.TimerToggle()</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(this, "ANCHOR_TOP")
+						GameTooltip:SetText("Timer sesji")
+						GameTooltip:AddLine("Start/pauza pomiaru biezacej sesji", 0.8, 0.8, 0.8)
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parent_TimerReset" inherits="UIPanelButtonTemplate" text="Reset timera">
+				<Size><AbsDimension x="130" y="24"/></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="220" y="366"/></Offset></Anchor></Anchors>
+				<Scripts><OnClick>KillCounter.TimerReset()</OnClick></Scripts>
+			</Button>
+			<Button name="$parent_Reset" inherits="UIPanelButtonTemplate" text="Zapisz / nowa sesja">
+				<Size><AbsDimension x="214" y="24"/></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="394"/></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>KillCounter.ResetSession()</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(this, "ANCHOR_TOP")
+						GameTooltip:SetText("Reset sesji (zapisuje ja w archiwum)")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parent_ResetAll" inherits="UIPanelButtonTemplate" text="Reset all">
+				<Size><AbsDimension x="120" y="24"/></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="230" y="394"/></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>KillCounter.ResetAll()</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(this, "ANCHOR_TOP")
+						GameTooltip:SetText("Reset wszystkiego (kasuje tez archiwum)")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>this:RegisterForDrag("LeftButton")</OnLoad>
+			<OnShow>KillCounter.OnShowFrame()</OnShow>
+			<OnMouseWheel>KillCounter.OnMouseWheel(delta)</OnMouseWheel>
+			<OnDragStart>this:StartMoving()</OnDragStart>
+			<OnDragStop>KillCounter.OnDragStop(this)</OnDragStop>
+		</Scripts>
+	</Frame>
+</Ui>
